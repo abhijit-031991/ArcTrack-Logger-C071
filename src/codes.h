@@ -3,6 +3,8 @@
 #define CALIBRATION_BEGIN (byte)1       // Sent from device to App to indicate start of calibration mode
 #define CALIBRATION_END (byte)2         // Sent from device to App to indicate end of calibration mode
 #define FINISH_CALIBRATION (byte)3      // Sent from App to device to indicate calibration process is complete
+#define CALIBRATION_SUMMARY (byte)5    // Sent from App to device to request calibration summary data
+#define CALIBRATION_ERROR (byte)6      // Sent from device to App if calibration error detected
 
 #define GPS_CALIBRATION (byte)10        // Sent from device to App to indicate start of GPS calibration
 #define GPS_CALIBRATION_END (byte)11    // Sent from device to App to indicate end of GPS calibration
@@ -57,3 +59,6 @@
 #define CAPACITANCE_OK (byte)81       // Sent from device to App if capacitance sensor is functioning properly
 #define CAPACITANCE_ERROR (byte)82  // Sent from device to App if capacitance sensor error detected
 
+////// Misc //////
+#define REQ_DFU (byte)200             // app->dev: reboot into the ROM DFU bootloader (dev only)
+#define REQ_CAL_SUM (byte)201         // app->dev: request to share calibration summary  

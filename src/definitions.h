@@ -1,31 +1,39 @@
+#pragma once
+
 // Firmware Version //
 const float firmwareVersion = 4.0;
 
 // Device Information //
 
-const uint16_t tag = 10606;
+const uint16_t tag = 10608;
 const uint8_t devType = 107;
 
 // Pin Definitions //
-#define GPS_PIN PIN_PD7
-#define RINT PIN_PD6
-#define AINT1 PIN_PD4
-#define AINT2 PIN_PD5
-#define LCS PIN_PA7
-#define FCS PIN_PA7
-#define BAT_SNS A2
+#define USART2_TX PA2
+#define USART2_RX PA3
+#define USART1_TX PB6
+#define USART1_RX PB7
+#define I2C1_SCL PB8
+#define I2C1_SDA PB9
+#define I2C2_SCL PA7
+#define I2C2_SDA PA6
+#define USB_DM PA11   // USB D- (was "USB_D-": '-' is not valid in a macro name)
+#define USB_DP PA12   // USB D+ (was "USB_D+": '+' is not valid in a macro name)
+#define SPI1_MOSI PB5
+#define SPI1_MISO PB4
+#define SPI1_SCK PB3
+#define SPI1_NSS PA15
+#define BAT_SNS PB1
+#define CHRG_STAT PB2
+#define SNS_EN PA5
+#define GPS_EN PA4
+#define PWR_WKUP1 PA0
 
 #define MAX_ELECTRODES 4
 
-// Battery sensing
-#define BAT_DIVIDER_RATIO 2.0
-#define ADC_MAX_VALUE 1023.0
-#define ADC_REF_VOLTAGE 3.3   // change to 5.0 if AVCC = 5V
-#define BAT_CALIBRATION 0.95
-
 
 // EEPROM MetaData Address //
-int eepromAddress = 1;
+inline int eepromAddress = 1;   // inline: safe to include from multiple TUs (C++17)
 
 // Structs //
 
@@ -49,6 +57,7 @@ struct data{
     float z;
     unsigned int count;
     uint16_t id;
+    uint8_t sats;        // satellites used to acquire the fix
 }__attribute__((__packed__));
 
 struct reqPing{
@@ -61,6 +70,7 @@ struct setttings{
     int gpsFrq;
     int gpsTout;
     int hdop;
+    int minSat;          // minimum satellites required to record a fix
     int radioFrq;
     int startHour;
     int endHour;
@@ -69,10 +79,12 @@ struct setttings{
 
 struct meta
   {
+    uint32_t magic;      // validity marker (META_MAGIC) - rejects stale/foreign metadata
     int gfrq;
     int gto;
     int hdop;
     uint16_t count;
     uint32_t wa;
     uint32_t ra;
+    int msat;            // persisted minimum-satellites setting
   }__attribute__((__packed__));
